@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Book from './Book';
 
 
-class ListBooks extends Component {
+class ListBooks extends Component {  
 
   render(){
     const {shelfBooks} = this.props;
@@ -11,11 +11,13 @@ class ListBooks extends Component {
     return(
       <ol className="books-grid">
         {shelfBooks.map(book=>(
-          <li key={book.title}>
+          <li key={book.id}>
             <Book
+              book={book}
+              updateShelf={this.props.updateShelf}
               backgroundImage={`url(${book.imageLinks.thumbnail})`}
               title={book.title}
-              authors={book.authors.map(author => <span>{author} *  </span>)}/>
+              authors={book.authors.map((author,index) => <span key={index}>{author} *  </span>)}/>
           </li>
         ))}
       </ol>
