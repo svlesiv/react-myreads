@@ -75,7 +75,6 @@ class BooksApp extends Component {
                   updateShelf={this.updateShelf}/>
             )}
         />
-
       </div>
     )}
 }
