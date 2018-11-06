@@ -1,53 +1,65 @@
-import React from 'react'
-import './App.css'
-import * as BooksAPI from './api/BooksAPI'
-import { Link } from 'react-router-dom';
+import React, {Component} from 'react';
+import './App.css';
+import * as BooksAPI from './api/BooksAPI';
 import { Route } from 'react-router-dom'
 
-import BookShelf from './components/BookShelf'
 import SearchBooks from './components/SearchBooks'
-// import MyBookShelfs from './components/MyBookShelfs'
+import MyBookShelfs from './components/MyBookShelfs'
 
-class BooksApp extends React.Component {
+class BooksApp extends Component {
   state = {
     books: []
   }
 
+  /**
+  * @description Fetch all books from the API server
+  *              with shelfs "currentlyReading", "wantToRead", and "read"
+  *              immediately after a component is mounted and update state
+  */
   componentDidMount(){
+    this.fetchAll();
+  };
+
+  /**
+  * @description Reload the page with updated state
+  */
+  handleReload=()=>{
+    this.fetchAll();
+  };
+
+  /**
+  * @description Fetch all books with shelfs "currentlyReading", "wantToRead", and "read"
+  *               and update state
+  */
+  fetchAll=()=>{
     BooksAPI.getAll()
       .then((books)=>{
         this.setState(()=>({
           books
-        }))
-      })
-  }
+        }));
+      });
+  };
 
-  handleReload=()=>{
-    window.location.reload();
-  }
-
-  filterShelf = (shelf) => {
-    return this.state.books.filter(book => book.shelf === shelf);
-  }
-
+  /**
+  * @description Update shelf of the book, then update state
+  * @param {object} book
+  * @param {string} shelf
+  */
   updateShelf=(book,shelf)=>{
     BooksAPI.update(book, shelf)
       .then((books)=>{
         book.shelf = shelf;
-        this.setState(()=>({
-          books: this.state.books
-        }))
-        })
-    }
+        this.setState((currState)=>({
+          books: [...currState.books, books]
+        }));
+      });
+    };
 
   render() {
-    let current = this.filterShelf("currentlyReading");
-    let want = this.filterShelf("wantToRead");
-    let read = this.filterShelf("read");
-
     return (
       <div className="app">
 
+        {/*Search page*/}
         <Route exact path='/search' render={()=>(
               <SearchBooks
                   updateShelf={this.updateShelf}
@@ -56,22 +68,11 @@ class BooksApp extends React.Component {
             )}
         />
 
+        {/*Home page*/}
         <Route exact path='/' render={()=>(
-              <div className="list-books">
-                <div className="list-books-title">
-                  <h1>MyReads</h1>
-                </div>
-                <div className="list-books-content">
-                  <div>
-                  <BookShelf title='Currently Reading' updateShelf={this.updateShelf} books={current}/>
-                  <BookShelf title='Want to Read' updateShelf={this.updateShelf} books={want}/>
-                  <BookShelf title='Read' updateShelf={this.updateShelf} books={read}/>
-                  </div>
-                </div>
-                <div className="open-search">
-                  <Link to='/search'>Add a book</Link>
-                </div>
-              </div>
+              <MyBookShelfs
+                  books={this.state.books}
+                  updateShelf={this.updateShelf}/>
             )}
         />
 
@@ -79,4 +80,4 @@ class BooksApp extends React.Component {
     )}
 }
 
-export default BooksApp
+export default BooksApp;

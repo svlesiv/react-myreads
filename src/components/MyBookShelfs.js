@@ -1,23 +1,26 @@
-
-////DELETE
-
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-
-import BookShelf from './BookShelf'
+import BookShelf from './BookShelf';
 
 class MyBookShelfs extends Component {
-
-  filterShelf = (shelf) => {
-    return this.props.books.filter(book => book.shelf === shelf);
+  static propTypes = {
+    books: PropTypes.array.isRequired,
+    updateShelf: PropTypes.func.isRequired,
   }
 
+  /**
+  * @description Filter the books for a specific shelf
+  * @param {string} shelf
+  */
+  filterShelf = (shelf) => {
+    return this.props.books.filter(book => book.shelf === shelf);
+  };
+
   render(){
-    let current = this.filterShelf("currentlyReading");
-    let want = this.filterShelf("wantToRead");
-    let read = this.filterShelf("read");
+    let current = this.filterShelf('currentlyReading');
+    let want = this.filterShelf('wantToRead');
+    let read = this.filterShelf('read');
 
     return (
       <div className="list-books">
@@ -26,9 +29,12 @@ class MyBookShelfs extends Component {
         </div>
         <div className="list-books-content">
           <div>
-          <BookShelf title='Currently Reading' updateShelf={this.props.updateShelf} books={this.props.books}/>
-          <BookShelf title='Want to Read' updateShelf={this.props.updateShelf} books={this.props.books}/>
-          <BookShelf title='Read' updateShelf={this.props.updateShelf} books={this.props.books}/>
+
+          {/*Display shelfs*/}
+          <BookShelf title='Currently Reading' updateShelf={this.props.updateShelf} books={current}/>
+          <BookShelf title='Want to Read' updateShelf={this.props.updateShelf} books={want}/>
+          <BookShelf title='Read' updateShelf={this.props.updateShelf} books={read}/>
+
           </div>
         </div>
         <div className="open-search">

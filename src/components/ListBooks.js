@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Book from './Book';
 
-const ListBooks = props => {  
+const ListBooks = props => {
   const {shelfBooks, updateShelf} = props;
 
   return(
     <ol className="books-grid">
+
+      {/*Iterate over books array and populate <Book> component props*/}
       {shelfBooks.length > 0 && shelfBooks.map(book=>(
         <li key={book.id}>
             <Book
